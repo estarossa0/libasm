@@ -15,36 +15,39 @@ int	fun(void *s1, void *s2)
 	return (1);
 }
 
-void remove_if(t_list **begin_list, void *data_ref, int (*cmp)())
-{
+void remove_if(t_list **begin_list, void *data_ref, int (*cmp)());
+/*{
 	t_list *prev;
 	t_list *tmp;
 	t_list *curr;
 
 	if (begin_list == NULL || *begin_list == NULL)
 		return;
-	while((*cmp)((*begin_list)->data, data_ref) == 0 )
+	while(*begin_list && (*cmp)((*begin_list)->data, data_ref) == 0 )
 	{
 		tmp = *begin_list;
 		*begin_list = (*begin_list)->next;
 		free(tmp);
 	}
-	curr = (*begin_list)->next;
-	prev = *begin_list;
-	while (curr)
+	if (*begin_list)
 	{
-		if ((*cmp)(curr->data, data_ref) == 0)
+		curr = (*begin_list)->next;
+		prev = *begin_list;
+		while (curr)
 		{
-			tmp = curr;
+			if ((*cmp)(curr->data, data_ref) == 0)
+			{
+				tmp = curr;
+				curr = curr->next;
+				prev->next = curr;
+				free(tmp);
+				continue;
+			}
 			curr = curr->next;
-			prev->next = curr;
-			free(tmp);
-			continue;
+			prev = prev->next;
 		}
-		curr = curr->next;
-		prev = prev->next;
 	}
-}
+} */
 
 int main(void)
 {
@@ -54,6 +57,9 @@ int main(void)
 
 	lst = (t_list*)malloc(sizeof(t_list));
 	lst->data = &i;
+	/* lst->next = (t_list*)malloc(sizeof(t_list));
+	lst->next->data = &j;
+	lst->next->next = NULL; */
 	lst->next = (t_list*)malloc(sizeof(t_list));
 	lst->next->data = &j;
 	lst->next->next = (t_list*)malloc(sizeof(t_list));
@@ -63,6 +69,7 @@ int main(void)
 	lst->next->next->next->next = (t_list*)malloc(sizeof(t_list));
 	lst->next->next->next->next->data = &j;
 	lst->next->next->next->next->next =  NULL;
+
 	t_list *save;
 	save = lst;
 	while (save != NULL)
