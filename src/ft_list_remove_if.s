@@ -1,79 +1,99 @@
 global	_ft_list_remove_if
 extern	_free
+extern	_vibe_check
 section .text
 
 ;rbx	: current
-;//		: prev
-;//		: tmp
+;rbp	: prev
+;r12	: tmp
+
 _ft_list_remove_if:
+
+check:
 cmp		qword rdi, 0
 jz		exit
 cmp		qword [rdi], 0
 jz		exit
 push	rbx
+push	rbp
+push	r12
+sub		rsp, 24
+first_loop:
+cmp		qword [rdi], 0
+jz		return
+push	rdi
+push	rsi
+push	rdx
+mov		rdi, [rdi]
+mov		rdi, [rdi]
+call	rdx
+pop		rdx
+pop		rsi
+pop		rdi
+cmp		rax, 0
+jz		remove_head
+jmp		second_loop_init
+
+remove_head:
+mov		rbp, [rdi]
+mov		rbx, [rbp + 8]
+mov		[rdi], rbx
+push	rdi
+push	rsi
+push	rdx
+mov		rdi, rbp
+call	_free
+pop		rdx
+pop		rsi
+pop		rdi
+jmp		first_loop
+
+second_loop_init:
+cmp		qword [rdi], 0
+jz		return
 mov		rbx, [rdi]
-first_part:
-	cmp		qword rbx, 0
-	jz		second_part
-	cmp		qword [rbx + 8], 0
-	jz		second_part
-	push	rdi
-	mov		rdi, [rbx + 8]
-	mov		rdi, [rdi]
-	push	rdx
-	push	rsi
-	call	rdx
-	pop		rsi
-	pop		rdx
-	pop		rdi
-	cmp		rax, 0
-	jz		remove
+mov		rbx, [rbx + 8]
+mov		rbp, [rdi]
+
+second_loop:
+cmp		rbx, 0
+jz		return
+push	rdi
+push	rsi
+push	rdx
+mov		rdi, [rbx]
+call	rdx
+pop		rdx
+pop		rsi
+pop		rdi
+cmp		rax, 0
+jnz		iter
+
+remove_curr:
+mov		r12, rbx
+mov		rbx, [rbx + 8]
+mov		[rbp + 8], rbx
+push	rdi
+push	rsi
+push	rdx
+mov		rdi, r12
+call	_free
+pop		rdx
+pop		rsi
+pop		rdi
+jmp		second_loop
 
 iter:
-	mov		rbx, [rbx + 8]
-	jmp		first_part
+mov		rbx, [rbx + 8]
+mov		rbp, [rbp + 8]
+jmp		second_loop
 
-
-remove:
-; call vibe_check
-	push	rdi
-	push	rcx
-	mov		rdi, [rbx + 8]
-	mov		rcx, rbx
-	mov		rcx, [rcx + 8]
-	mov		rcx, [rcx + 8]
-	mov		[rbx + 8], rcx
-	push	rdx
-	push	rsi
-	call	_free
-	pop		rsi
-	pop		rdx
-	pop		rcx
-	pop		rdi
-	jmp	iter
-
-second_part:
-	mov		rbx, [rdi]
-	cmp		qword rbx, 0
-	jz		return
-	push	rdi
-	mov		rdi, [rbx]
-	call	rdx
-	pop		rdi
-	cmp		rax, 0
-	jnz		return
-	mov		rax, [rbx+8]
-	mov		[rdi], rax
-	push	rdi
-	sub		rsp, 8
-	mov		rdi, rbx
-	call	_free
-	add		rsp, 8
-	pop		rdi
-	pop		rbx
-	ret
 return:
-	pop rbx
-	ret
+add		rsp, 24
+pop		r12
+pop		rbp
+pop		rbx
+ret
+
 exit:
-	ret
+ret

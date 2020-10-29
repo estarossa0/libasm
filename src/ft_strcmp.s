@@ -7,16 +7,26 @@ while:
 	jz		return
 	cmp		byte [rsi], 0
 	jz		return
-	mov		al, [rdi]
-	cmp		al, [rsi]
-	jne		return
+	mov		rcx, [rdi]
+	cmp		rcx, [rsi]
+	jl		greater
+	jg		down
 	inc		rsi
 	inc		rdi
 	jmp		while
 
 return:
+	mov		rcx, [rdi]
+	cmp		rcx, [rsi]
+	jl		down
+	jg		greater
 	mov		rax, 0
-	mov		rcx, 0
-	mov		cl, [rsi]
-	sub		rax, rcx
 	ret
+down:
+	mov	rax, -1
+	ret
+
+greater:
+	mov		rax, 1
+	ret
+
