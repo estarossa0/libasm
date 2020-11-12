@@ -18,7 +18,8 @@ while:
 
 return:
 	mov		rcx, [rdi]
-	cmp		rcx, [rsi]
+	sub		rcx, [rsi]
+	cmp		cl, 0
 	jl		down
 	jg		greater
 	mov		rax, 0
