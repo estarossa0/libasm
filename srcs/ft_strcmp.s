@@ -8,9 +8,10 @@ while:
 	cmp		byte [rsi], 0
 	jz		return
 	mov		rcx, [rdi]
-	cmp		rcx, [rsi]
-	jl		greater
-	jg		down
+	sub		rcx, [rsi]
+	cmp		cl, 0
+	jl		down
+	jg		greater
 	inc		rsi
 	inc		rdi
 	jmp		while
