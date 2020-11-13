@@ -14,7 +14,8 @@ OBJS	= $(SRCS:.s=.o)
 SRCS_BONUS	= bonus/ft_atoi_base.s \
 				bonus/ft_list_push_front.s \
 				bonus/ft_list_size.s \
-				bonus/ft_strchr.s \
+				bonus/ft_list_sort.s \
+				bonus/ft_list_remove_if.s\
 
 OBJS_BONUS	= $(SRCS_BONUS:.s=.o)
 
@@ -28,7 +29,7 @@ all: $(NAME)
 $(NAME) :	$(OBJS)
 	ar -rc $@ $(OBJS)
 
-bonus : $(OBJS_BONUS) $(OBJS)
+bonus : $(OBJS) $(OBJS_BONUS)
 	ar -rc $(NAME) $(OBJS) $(OBJS_BONUS)
 
 clean:
